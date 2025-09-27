@@ -15,6 +15,8 @@
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils"></script>
 
+  <script src="content.js"></script>
+
   <script>
     const video = document.getElementById('webcam');
     const canvas = document.getElementById('canvas');
@@ -139,11 +141,11 @@
       // Metrics
       ctx.fillStyle = "blue";
       ctx.font = "16px monospace";
-      ctx.fillText(`Torso Angle: ${torsoAngle.toFixed(1)}°`, 10, 80);
-      ctx.fillText(`Head Offset: ${headOffset.toFixed(2)}`, 10, 100);
-      ctx.fillText(`Shoulder Roll: ${shoulderRoll.toFixed(2)}`, 10, 120);
-      ctx.fillText(`Pelvis Shift: ${lateralPelvisShift.toFixed(2)}`, 10, 140);
-      ctx.fillText(`Head Drop: ${headDrop.toFixed(2)}`, 10, 160);
+      ctx.fillText(`Torso Angle: ${torsoAngle.toFixed(1)}°`, 10, 20);
+      ctx.fillText(`Head Offset: ${headOffset.toFixed(2)}`, 10, 40);
+      ctx.fillText(`Shoulder Roll: ${shoulderRoll.toFixed(2)}`, 10, 60);
+      ctx.fillText(`Pelvis Shift: ${lateralPelvisShift.toFixed(2)}`, 10, 80);
+      ctx.fillText(`Head Drop: ${headDrop.toFixed(2)}`, 10, 100);
 
       // Slouch alert
       ctx.font = "28px sans-serif";
