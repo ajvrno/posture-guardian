@@ -97,7 +97,7 @@
         headOffset > 0.15 ||
         shoulderRoll > 0.1 ||
         lateralPelvisShift > 0.08 ||
-        headDrop < 0.3;
+        headDrop < 0.25;
 
       // Sticky alert logic
       if (typeof window.lastSlouchState === 'undefined') {
@@ -139,13 +139,13 @@
       ctx.stroke();
 
       // Metrics
-      ctx.fillStyle = "blue";
-      ctx.font = "16px monospace";
+      /**ctx.fillStyle = "blue";
+      ctx.font = "10px monospace";
       ctx.fillText(`Torso Angle: ${torsoAngle.toFixed(1)}°`, 10, 20);
       ctx.fillText(`Head Offset: ${headOffset.toFixed(2)}`, 10, 40);
       ctx.fillText(`Shoulder Roll: ${shoulderRoll.toFixed(2)}`, 10, 60);
       ctx.fillText(`Pelvis Shift: ${lateralPelvisShift.toFixed(2)}`, 10, 80);
-      ctx.fillText(`Head Drop: ${headDrop.toFixed(2)}`, 10, 100);
+      ctx.fillText(`Head Drop: ${headDrop.toFixed(2)}`, 10, 100);**/
 
       // Slouch alert
       ctx.font = "28px sans-serif";
