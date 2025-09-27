@@ -77,19 +77,25 @@
         x: (leftHip.x + rightHip.x) / 2,
         y: (leftHip.y + rightHip.y) / 2
       };
+      const avgEar = {
+        x: (leftEar.x + rightEar.x) / 2,
+        y: (leftEar.y + rightEar.y) / 2    
+      };
 
       // Metrics
       const torsoAngle = getAngle(avgHip, avgShoulder, nose);
       const headOffset = Math.abs(nose.x - avgShoulder.x);
       const shoulderRoll = Math.abs(leftShoulder.y - rightShoulder.y);
       const lateralPelvisShift = Math.abs(avgShoulder.x - avgHip.x);
+      const headDrop = avgShoulder.y - avgEar.y;
 
       // Thresholds
       const isSlouching =
         torsoAngle < 35 ||
-        headOffset > 0.1 ||
-        shoulderRoll > 0.05 ||
-        lateralPelvisShift > 0.08;
+        headOffset > 0.15 ||
+        shoulderRoll > 0.1 ||
+        lateralPelvisShift > 0.08 ||
+        headDrop < 0.3;
 
       // Sticky alert logic
       if (typeof window.lastSlouchState === 'undefined') {
@@ -133,10 +139,11 @@
       // Metrics
       ctx.fillStyle = "blue";
       ctx.font = "16px monospace";
-      ctx.fillText(`Torso Angle: ${torsoAngle.toFixed(1)}°`, 10, 20);
-      ctx.fillText(`Head Offset: ${headOffset.toFixed(2)}`, 10, 40);
-      ctx.fillText(`Shoulder Roll: ${shoulderRoll.toFixed(2)}`, 10, 60);
-      ctx.fillText(`Pelvis Shift: ${lateralPelvisShift.toFixed(2)}`, 10, 80);
+      ctx.fillText(`Torso Angle: ${torsoAngle.toFixed(1)}°`, 10, 80);
+      ctx.fillText(`Head Offset: ${headOffset.toFixed(2)}`, 10, 100);
+      ctx.fillText(`Shoulder Roll: ${shoulderRoll.toFixed(2)}`, 10, 120);
+      ctx.fillText(`Pelvis Shift: ${lateralPelvisShift.toFixed(2)}`, 10, 140);
+      ctx.fillText(`Head Drop: ${headDrop.toFixed(2)}`, 10, 160);
 
       // Slouch alert
       ctx.font = "28px sans-serif";
