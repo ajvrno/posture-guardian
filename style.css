@@ -1,0 +1,17 @@
+body {
+    margin: 0;
+    position: relative;
+}
+#webcam, #canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+h1 {
+    position: relative;
+    z-index: 2;
+    background: white;
+    margin: 0;
+    padding: 8px;
+    font-family: sans-serif;
+}
