@@ -19,7 +19,7 @@ body {
     text-align: left !important; /* Override inline style from JS */
 }
 
-.pg-app-container {
+.app-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -41,14 +41,13 @@ body {
 }
 
 h1 {
-    position: static !important; /* Override original positioning */
-    background: none !important;
+    position: absolute !important;
+    top: 0 !important;
     padding: 0 !important;
     font-size: 2.5rem;
     font-weight: 700;
     color: #ffffff;
     letter-spacing: -1px;
-    margin: 0;
 }
 
 .video-wrapper {
@@ -67,40 +66,7 @@ h1 {
 
 #webcam, #canvas {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100% !important;
-    height: 100% !important;
     object-fit: cover;
-}
-
-.status-message {
-    position: absolute;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 10;
-    padding: 0.75rem 1.5rem;
-    border-radius: 999px;
-    font-size: 1.1rem;
-    font-weight: 500;
-    color: #fff;
-    text-align: center;
-    min-width: 200px;
-    transition: background-color 0.4s ease, transform 0.4s ease;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.status-message.good-posture {
-    background-color: rgba(45, 219, 128, 0.4);
-}
-
-.status-message.slouching {
-    background-color: rgba(235, 87, 87, 0.5);
-    animation: pulse 1.5s infinite;
 }
 
 @keyframes pulse {
