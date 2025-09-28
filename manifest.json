@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Posture Guardian (Overlay Pill)",
+  "version": "4.4.0",
+  "description": "Tiny overlay that flips red when your Posture Guardian app detects slouching. Live-linked to the PG tab.",
+  "permissions": ["storage", "scripting", "tabs"],
+  "host_permissions": ["http://*/*", "https://*/*"],
+  "background": { "service_worker": "background.js" },
+  "action": { "default_title": "Posture Guardian" },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["overlay_content.js", "pg_bridge.js"],
+      "css": ["overlay.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

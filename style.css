@@ -1,0 +1,126 @@
+@import url('https://fonts.googleapis.com/css2?family=SUSE+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+
+:root {
+    --bg-color: #1a1a1d;
+    --card-color: #2c2c31;
+    --text-color: #e0e0e0;
+    --primary-color: #4a90e2;
+    --good-color: #4caf50;
+    --slouch-color: #f44336;
+    --shadow-color: rgba(0, 0, 0, 0.4);
+}
+
+body {
+    margin: 0;
+    padding: 2rem;
+    font-family: "SUSE Mono", sans-serif;
+    background-color: var(--bg-color); 
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 680px;
+    text-align: center;
+    animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -1px;
+    margin: 0;
+}
+
+.description {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    max-width: 600px;
+    color: #b0b0b0;
+    margin: 0 0 1rem 0;
+}
+
+.video-wrapper {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    width: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+    background-color: var(--card-color);
+    box-shadow: 0 10px 30px var(--shadow-color);
+    transition: box-shadow 0.3s ease;
+}
+
+.video-wrapper:hover {
+    box-shadow: 0 15px 40px var(--shadow-color);
+}
+
+#webcam, #canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#webcam, #canvas {
+    transform: scaleX(-1);
+}
+
+.status-alert {
+    position: absolute;
+    top: 45px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #fff;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.4s ease, transform 0.4s ease;
+    z-index: 10;
+}
+
+.status-alert.good {
+    background-color: var(--good-color);
+}
+
+.status-alert.slouch {
+    background-color: var(--slouch-color);
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+.status-alert.waiting {
+    background-color: #6c757d;
+}
+
+@keyframes pulse {
+    0% { transform: translateX(-50%) scale(1); }
+    50% { transform: translateX(-50%) scale(1.05); }
+    100% { transform: translateX(-50%) scale(1); }
+}

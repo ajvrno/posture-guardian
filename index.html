@@ -1,33 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Pose Viewer</title>
-  <style>
-    body {
-      margin: 0;
-      position: relative;
-    }
-    #webcam, #canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-    h1 {
-      position: relative;
-      z-index: 2;
-      background: white;
-      margin: 0;
-      padding: 8px;
-      font-family: sans-serif;
-    }
-  </style>
+  <title>Posture Guardian</title>
+  <link rel="stylesheet" type="text/css" href="style.css" />
 </head>
-<body>
-  <h1>Posture Guardian - Debug Viewer</h1>
-  <video id="webcam" autoplay playsinline></video>
-  <canvas id="canvas"></canvas>
 
-  <!-- MediaPipe Libraries -->
+<body>
+  <div class="app-container">
+    <h1>Posture Guardian 🧍‍♂️</h1>
+    <p class="description">
+      Tired of looking like the Hunchback of Notredam? Don't fret! Posture Guardian is here to help.
+      Get instant feedback to help you correct slouching and maintain a healthy posture!
+    </p>
+
+    <div class="video-wrapper">
+      <video id="webcam" autoplay playsinline></video>
+      <canvas id="canvas"></canvas>
+      <div id="status-message" class="status-alert">Initializing.</div>
+    </div>
+  </div>
+
+  <!-- MediaPipe libs -->
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils"></script>
@@ -36,6 +29,7 @@
     const video = document.getElementById('webcam');
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
+    const statusMessage = document.getElementById('status-message');
 
     const pose = new Pose({
       locateFile: file => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
@@ -76,7 +70,11 @@
       }
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      if (!results.poseLandmarks) return;
+      if (!results.poseLandmarks) {
+        statusMessage.textContent = "Waiting for user.";
+        statusMessage.className = 'status-alert waiting';
+        return;
+      }
 
       const lm = smoothLandmarks(results.poseLandmarks, previousLandmarks);
       previousLandmarks = lm;
@@ -94,21 +92,25 @@
         x: (leftHip.x + rightHip.x) / 2,
         y: (leftHip.y + rightHip.y) / 2
       };
+      const avgEar = {
+        x: (leftEar.x + rightEar.x) / 2,
+        y: (leftEar.y + rightEar.y) / 2
+      };
 
       // Metrics
       const torsoAngle = getAngle(avgHip, avgShoulder, nose);
       const headOffset = Math.abs(nose.x - avgShoulder.x);
       const shoulderRoll = Math.abs(leftShoulder.y - rightShoulder.y);
       const lateralPelvisShift = Math.abs(avgShoulder.x - avgHip.x);
+      const headDrop = avgShoulder.y - avgEar.y;
 
-      // Thresholds
       const isSlouching =
         torsoAngle < 35 ||
-        headOffset > 0.1 ||
-        shoulderRoll > 0.05 ||
-        lateralPelvisShift > 0.08;
+        headOffset > 0.15 ||
+        shoulderRoll > 0.1 ||
+        lateralPelvisShift > 0.08 ||
+        headDrop < 0.25;
 
-      // Sticky alert logic
       if (typeof window.lastSlouchState === 'undefined') {
         window.lastSlouchState = false;
         window.slouchHoldFrames = 0;
@@ -119,13 +121,35 @@
         window.slouchHoldFrames = 0;
       } else if (window.lastSlouchState) {
         window.slouchHoldFrames++;
-        if (window.slouchHoldFrames > 30) { // hold for 1 second (30 frames)
+        if (window.slouchHoldFrames > 30) { 
           window.lastSlouchState = false;
           window.slouchHoldFrames = 0;
         }
       }
 
-      // Drawing
+      // Update the on-page chip
+      if (window.lastSlouchState) {
+        statusMessage.textContent = "You're slouching! Sit up straight!";
+        statusMessage.className = 'status-alert slouch';
+      } else {
+        statusMessage.textContent = "Good posture 👍";
+        statusMessage.className = 'status-alert good';
+      }
+
+      (function () {
+        const title = window.lastSlouchState ? 'Posture Alert' : 'Posture';
+        const message = window.lastSlouchState
+          ? "You're slouching! Sit up straight!"
+          : "Good posture 👍";
+        try {
+          window.postMessage({
+            type: 'PG_ALERT',
+            payload: { isSlouch: window.lastSlouchState, title, message }
+          }, '*');
+        } catch (e) { /* no-op */ }
+      })();
+
+      // Draw markers
       const drawDot = (pt, color = "#FF3D00") => {
         ctx.beginPath();
         ctx.fillStyle = color;
@@ -146,25 +170,6 @@
       ctx.moveTo(avgShoulder.x * canvas.width, avgShoulder.y * canvas.height);
       ctx.lineTo(avgHip.x * canvas.width, avgHip.y * canvas.height);
       ctx.stroke();
-
-      // Metrics
-      ctx.fillStyle = "blue";
-      ctx.font = "16px monospace";
-      ctx.fillText(`Torso Angle: ${torsoAngle.toFixed(1)}°`, 10, 20);
-      ctx.fillText(`Head Offset: ${headOffset.toFixed(2)}`, 10, 40);
-      ctx.fillText(`Shoulder Roll: ${shoulderRoll.toFixed(2)}`, 10, 60);
-      ctx.fillText(`Pelvis Shift: ${lateralPelvisShift.toFixed(2)}`, 10, 80);
-
-      // Slouch alert
-      ctx.font = "28px sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillStyle = window.lastSlouchState ? "red" : "green";
-      ctx.fillText(
-        window.lastSlouchState ? "You're slouching! Sit up straight!" : "Good posture 👍",
-        canvas.width / 2,
-        120
-      );
-      ctx.textAlign = "left";
     });
 
     const camera = new Camera(video, {
